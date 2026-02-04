@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sky Store - أداة تنحيف الفك</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #fff;
+            overflow-x: hidden;
+            direction: rtl;
+        }
+
+        /* Animated Glowing Dots Background */
+        .background-dots {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .dot {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00d4ff;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+            50% { transform: translate(30px, -30px); opacity: 1; }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Page Transitions */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Landing Page */
+        .landing-page {
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px #00d4ff; }
+            50% { text-shadow: 0 0 40px #00d4ff, 0 0 60px #8b00ff; }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #00d4ff, #8b00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .price-section {
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .price {
+            font-size: 2.5rem;
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .currency {
+            font-size: 1rem;
+            color: #8b00ff;
+        }
+
+        .delivery {
+            color: #00ff88;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .delivery-time {
+            color: #ffaa00;
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+
+        /* Urgency Bar */
+        .urgency-bar {
+            background: linear-gradient(90deg, #ff4444, #ff8800);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            animation: pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.6);
+            position: sticky;
+            top: 20px;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Order Counter */
+        .counter-section {
+            background: rgba(139, 0, 255, 0.1);
+            border: 2px solid #8b00ff;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .counter-number {
+            font-size: 1.8rem;
+            color: #8b00ff;
+            font-weight: bold;
+        }
+
+        .counter-text {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #8b00ff);
+            color: #fff;
+            margin-bottom: 15px;
+            animation: shake 3s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        @keyframes shake {
+            0%, 90%, 100% { transform: translateX(0); }
+            92% { transform: translateX(-5px); }
+            95% { transform: translateX(5px); }
+            98% { transform: translateX(-5px); }
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.8);
+        }
+
+        .btn-secondary {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            direction: rtl;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            border-color: #8b00ff;
+        }
+
+        /* Confirmation Page */
+        .confirmation-details {
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: right;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .detail-label { color: #8b00ff; font-weight: bold; }
+        .detail-value { color: #00d4ff; }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff6666;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .price { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-dots" id="dotsContainer"></div>
+
+    <!-- Page 1 -->
+    <div class="page active" id="page1">
+        <div class="container">
+            <div class="landing-page">
+                <div class="logo">✨</div>
+                <h1>أداة تنحيف الفك</h1>
+                <p class="description">Jawline Exerciser - الحل الأمثل لتحسين مظهر الفك والذقن بطريقة طبيعية وآمنة</p>
+                <div class="urgency-bar">🔥 باقي 7 قطع فقط 🔥</div>
+                <div class="price-section">
+                    <div class="price">12,000 <span class="currency">دينار عراقي</span></div>
+                    <div class="delivery">✓ التوصيل مجاني</div>
+                    <div class="delivery-time">⏱️ بعد تعبئة معلوماتك سيصلك الطلب خلال 24 ساعة</div>
+                </div>
+                <div class="counter-section">
+                    <div class="counter-number" id="counterDisplay">14,500</div>
+                    <div class="counter-text">أكثر من <span id="counterValue">14,500</span> طلب تم تنفيذه بنجاح ✓</div>
+                </div>
+                <button class="btn btn-primary" onclick="goToPage(2)">اطلب الآن</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2 -->
+    <div class="page" id="page2">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #00d4ff;">اختر محافظتك</h2>
+            <div class="form-group">
+                <select id="governorate">
+                    <option value="">-- اختر المحافظة --</option>
+                    <option value="بغداد">بغداد</option>
+                    <option value="البصرة">البصرة</option>
+                    <option value="نينوى">نينوى</option>
+                    <option value="الأنبار">الأنبار</option>
+                    <option value="كربلاء">كربلاء</option>
+                    <option value="النجف">النجف</option>
+                    <option value="ذي قار">ذي قار</option>
+                    <option value="ميسان">ميسان</option>
+                    <option value="واسط">واسط</option>
+                    <option value="بابل">بابل</option>
+                    <option value="ديالى">ديالى</option>
+                    <option value="صلاح الدين">صلاح الدين</option>
+                    <option value="كركوك">كركوك</option>
+                    <option value="السليمانية">السليمانية</option>
+                    <option value="أربيل">أربيل</option>
+                    <option value="دهوك">دهوك</option>
+                    <option value="المثنى">المثنى</option>
+                    <option value="القادسية">القادسية</option>
+                </select>
+            </div>
+            <div id="error2" class="error-message">يرجى اختيار محافظة</div>
+            <button class="btn btn-secondary" onclick="validateAndGo(2, 3)">التالي</button>
+            <button class="btn btn-secondary" onclick="goToPage(1)" style="border-color: #8b00ff; color: #8b00ff;">رجوع</button>
+        </div>
+    </div>
+
+    <!-- Page 3 -->
+    <div class="page" id="page3">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #00d4ff;">اسم المنطقة</h2>
+            <div class="form-group">
+                <input type="text" id="area" placeholder="أدخل اسم منطقتك">
+            </div>
+            <div id="error3" class="error-message">يرجى إدخال اسم المنطقة</div>
+            <button class="btn btn-secondary" onclick="validateAndGo(3, 4)">التالي</button>
+            <button class="btn btn-secondary" onclick="goToPage(2)" style="border-color: #8b00ff; color: #8b00ff;">رجوع</button>
+        </div>
+    </div>
+
+    <!-- Page 4 -->
+    <div class="page" id="page4">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #00d4ff;">رقم الهاتف</h2>
+            <div class="form-group">
+                <input type="tel" id="phone" placeholder="مثال: 07812345678" maxlength="11">
+            </div>
+            <div id="error4" class="error-message">يرجى إدخال رقم هاتف صحيح (10-11 رقم)</div>
+            <button class="btn btn-secondary" onclick="validateAndGo(4, 5)">التالي</button>
+            <button class="btn btn-secondary" onclick="goToPage(3)" style="border-color: #8b00ff; color: #8b00ff;">رجوع</button>
+        </div>
+    </div>
+
+    <!-- Page 5 -->
+    <div class="page" id="page5">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #00ff88;">تأكيد الطلب</h2>
+            <div class="confirmation-details">
+                <div class="detail-row"><span class="detail-value" id="confirmGov">-</span><span class="detail-label">المحافظة:</span></div>
+                <div class="detail-row"><span class="detail-value" id="confirmArea">-</span><span class="detail-label">المنطقة:</span></div>
+                <div class="detail-row"><span class="detail-value" id="confirmPhone">-</span><span class="detail-label">رقم الهاتف:</span></div>
+                <div class="detail-row"><span class="detail-value">12,000 دينار</span><span class="detail-label">السعر:</span></div>
+            </div>
+            <button class="btn btn-primary" onclick="sendToWhatsApp()">تثبيت الحجز</button>
+            <button class="btn btn-secondary" onclick="goToPage(4)" style="border-color: #8b00ff; color: #8b00ff;">رجوع</button>
+        </div>
+    </div>
+
+    <script>
+        function generateDots() {
+            const container = document.getElementById('dotsContainer');
+            for (let i = 0; i < 50; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.left = Math.random() * 100 + '%';
+                dot.style.top = Math.random() * 100 + '%';
+                dot.style.animationDelay = Math.random() * 20 + 's';
+                container.appendChild(dot);
+            }
+        }
+
+        function initCounter() {
+            let count = Math.floor(Math.random() * 5800) + 14000;
+            const update = () => {
+                if (count < 19999) {
+                    count += Math.floor(Math.random() * 40) + 20;
+                    if (count > 19999) count = 19999;
+                    document.getElementById('counterDisplay').innerText = count.toLocaleString('ar-IQ');
+                    document.getElementById('counterValue').innerText = count.toLocaleString('ar-IQ');
+                }
+            };
+            update();
+            setInterval(update, 30000);
+        }
+
+        function goToPage(num) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + num).classList.add('active');
+            window.scrollTo(0, 0);
+            
+            if (num === 5) {
+                document.getElementById('confirmGov').innerText = document.getElementById('governorate').value;
+                document.getElementById('confirmArea').innerText = document.getElementById('area').value;
+                document.getElementById('confirmPhone').innerText = document.getElementById('phone').value;
+            }
+        }
+
+        function validateAndGo(current, next) {
+            let isValid = false;
+            if (current === 2) isValid = !!document.getElementById('governorate').value;
+            if (current === 3) isValid = !!document.getElementById('area').value.trim();
+            if (current === 4) {
+                const p = document.getElementById('phone').value.trim();
+                isValid = /^\d{10,11}$/.test(p);
+            }
+
+            if (isValid) {
+                document.getElementById('error' + current).style.display = 'none';
+                goToPage(next);
+            } else {
+                document.getElementById('error' + current).style.display = 'block';
+            }
+        }
+
+        function sendToWhatsApp() {
+            const msg = `مرحبا، أرغب بطلب منتجكم أداة تنحيف الفك (Jawline Exerciser).
+المحافظة: ${document.getElementById('governorate').value}
+المنطقة: ${document.getElementById('area').value}
+رقم الهاتف: ${document.getElementById('phone').value}`;
+            window.open(`https://wa.me/9647774789781?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        window.onload = () => { generateDots(); initCounter(); };
+    </script>
+</body>
+</html>
